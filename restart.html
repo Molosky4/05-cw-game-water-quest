@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Water Quest - Restart</title>
+  <link href="style.css" rel="stylesheet" type="text/css">
+  <style>
+    :root {
+      --screen-width: min(680px, 100%);
+      --screen-height: min(560px, 86vh);
+      --cw-yellow: #FFC907;
+      --cw-blue: #2E9DF7;
+      --cw-light-blue: #8BD1CB;
+      --cw-green: #4FCB53;
+      --cw-orange: #FF902A;
+      --cw-red: #F5402C;
+      --cw-dark-green: #159A48;
+      --cw-pink: #F16061;
+    }
+
+    .restart-screen {
+      width: var(--screen-width);
+      height: var(--screen-height);
+      max-height: 92vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 8px;
+      overflow: hidden;
+      padding: 10px;
+    }
+
+    .restart-celebration {
+      text-align: center;
+      color: #7b8592;
+      font-size: 0.86rem;
+      margin: 0;
+    }
+
+    .confetti-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 2;
+    }
+
+    .confetti-piece {
+      position: absolute;
+      top: -12%;
+      width: 8px;
+      height: 16px;
+      opacity: 0.92;
+      border-radius: 2px;
+      animation: confettiFall linear forwards;
+      transform: rotate(0deg);
+    }
+
+    @keyframes confettiFall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+      }
+      100% {
+        transform: translateY(125vh) rotate(720deg);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .confetti-piece {
+        animation: none;
+      }
+    }
+
+    .restart-title {
+      margin: 0;
+      border-radius: 14px;
+      border: 1px solid var(--cw-blue);
+      background: #ecf7ff;
+      color: var(--cw-dark-green);
+      padding: 12px 10px;
+      text-align: center;
+      font-family: "Proxima Nova", "Avenir Next", Avenir, sans-serif;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-size: 1.12rem;
+      font-weight: 800;
+    }
+
+    .high-score-banner {
+      margin: 0 auto;
+      border-radius: 999px;
+      border: 1.5px solid var(--cw-orange);
+      background: #fff3c8;
+      color: #715b21;
+      padding: 5px 12px;
+      font-size: 0.76rem;
+      font-family: "Proxima Nova", "Avenir Next", Avenir, sans-serif;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .result-message {
+      margin: 0;
+      border-radius: 12px;
+      border: 1.5px dashed var(--cw-light-blue);
+      background: #f2fbff;
+      color: #2b6a43;
+      text-align: center;
+      padding: 8px 10px;
+      font-family: "Proxima Nova", "Avenir Next", Avenir, sans-serif;
+      font-size: 0.84rem;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .final-score-card {
+      border: 1.5px solid #95cceb;
+      background: #f2f9ff;
+      border-radius: 18px;
+      padding: 12px 10px;
+      text-align: center;
+      color: #6a8ca7;
+    }
+
+    .final-score-label {
+      margin: 0;
+      font-family: "Proxima Nova", "Avenir Next", Avenir, sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      font-size: 0.78rem;
+    }
+
+    .final-score-number {
+      margin: 4px 0 2px;
+      font-size: 3rem;
+      line-height: 1;
+      color: var(--cw-blue);
+      font-family: "Proxima Nova", "Avenir Next", Avenir, sans-serif;
+      font-weight: 800;
+    }
+
+    .rank-label {
+      margin: 0;
+      color: var(--cw-dark-green);
+      font-family: "Proxima Nova", "Avenir Next", Avenir, sans-serif;
+      font-size: 0.88rem;
+      letter-spacing: 0.04em;
+    }
+
+    .stat-chips {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    .chip {
+      border-radius: 14px;
+      border: 1px solid #a7d4ee;
+      padding: 8px 6px;
+      text-align: center;
+      color: #35617f;
+      background: #eef8ff;
+      font-family: "Proxima Nova", "Avenir Next", Avenir, sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .chip strong {
+      display: block;
+      font-size: 1.45rem;
+      line-height: 1;
+      margin-bottom: 2px;
+    }
+
+    .chip.cans {
+      background: #ffe69a;
+    }
+
+    .chip.accuracy {
+      background: #caece7;
+    }
+
+    .chip.best {
+      background: #d7efcb;
+    }
+
+    .mission-banner {
+      border-radius: 14px;
+      border: 1.5px dashed var(--cw-orange);
+      background: #fff4ce;
+      color: #33693e;
+      text-align: center;
+      padding: 8px 10px;
+      font-family: "Proxima Nova", "Avenir Next", Avenir, sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .cta-play {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 54px;
+      border-radius: 36px;
+      border: 1.5px solid var(--cw-dark-green);
+      background: var(--cw-blue);
+      color: #ffffff;
+      font-family: "Proxima Nova", "Avenir Next", Avenir, sans-serif;
+      font-size: 1.12rem;
+      letter-spacing: 0.12em;
+      font-weight: 800;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+
+    .cta-play:hover {
+      color: #ffffff;
+      background: var(--cw-dark-green);
+      filter: brightness(1.03);
+    }
+
+    .cta-menu {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 46px;
+      border-radius: 30px;
+      border: 1px solid #8ec4e8;
+      background: #e8f5ff;
+      color: #2a6c95;
+      font-family: "Proxima Nova", "Avenir Next", Avenir, sans-serif;
+      font-size: 0.86rem;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+      text-decoration: none;
+      text-transform: none;
+    }
+
+    .cta-menu:hover {
+      color: var(--cw-orange);
+    }
+
+    @media (max-width: 520px) {
+      .restart-title {
+        font-size: 1rem;
+      }
+
+      .final-score-number {
+        font-size: 2.4rem;
+      }
+
+      .cta-play {
+        font-size: 0.98rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      :root {
+        --screen-height: auto;
+      }
+
+      .restart-screen {
+        height: auto;
+        max-height: none;
+        gap: 7px;
+        padding: 8px;
+      }
+
+      .final-score-number {
+        font-size: 2.4rem;
+      }
+
+      .chip strong {
+        font-size: 1.24rem;
+      }
+
+      .cta-play {
+        min-height: 48px;
+      }
+
+      .cta-menu {
+        min-height: 42px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .restart-screen {
+        border-radius: 22px;
+      }
+
+      .restart-title {
+        font-size: 0.92rem;
+      }
+
+      .result-message {
+        font-size: 0.74rem;
+      }
+
+      .stat-chips {
+        gap: 5px;
+      }
+
+      .chip {
+        font-size: 0.72rem;
+        padding: 6px 4px;
+      }
+
+      .chip strong {
+        font-size: 1.05rem;
+      }
+
+      .cta-play {
+        font-size: 0.9rem;
+      }
+
+      .cta-menu {
+        font-size: 0.78rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="container restart-screen" role="main">
+    <div id="confetti-layer" class="confetti-layer" aria-hidden="true"></div>
+    <p class="restart-celebration">Celebration animation placeholder</p>
+    <h2 id="restart-title" class="restart-title">Quest Complete!</h2>
+    <p id="high-score-banner" class="high-score-banner" hidden>New High Score!</p>
+    <p id="result-message" class="result-message">Game over message</p>
+
+    <section class="final-score-card" aria-label="Final score summary">
+      <p class="final-score-label">Final Score</p>
+      <p id="final-score" class="final-score-number">0</p>
+      <p class="rank-label">Stream Keeper</p>
+    </section>
+
+    <section class="stat-chips" aria-label="Result details">
+      <div class="chip cans"><strong id="chip-cans">0</strong>Cans Hit</div>
+      <div class="chip accuracy"><strong id="chip-accuracy">0%</strong>Accuracy</div>
+      <div class="chip best"><strong id="chip-best">0</strong>Best</div>
+    </section>
+
+    <section class="mission-banner" aria-label="Mission statement">
+      Every jerry can = real clean water impact.<br>
+      charity: water mission statement
+    </section>
+
+    <a class="cta-play" href="game.html">Play Again</a>
+    <a class="cta-menu" href="main_page.html">Main Menu</a>
+  </main>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const ended = params.get("ended") === "1";
+
+    // Guard route so this page is only shown after timer expiry in the game.
+    if (!ended) {
+      window.location.replace("game.html");
+    }
+
+    const score = Number(params.get("score") || "0");
+    const best = Number(params.get("best") || "0");
+    const goal = Number(params.get("goal") || "25");
+    const winThreshold = Number(params.get("win") || "20");
+
+    const winningMessages = [
+      "Amazing work! You brought clean water one drop at a time.",
+      "Quest complete! Your speed made a real impact.",
+      "You did it! Families are closer to clean water because of you.",
+      "Stream keeper status unlocked. Great run!"
+    ];
+
+    const losingMessages = [
+      "So close. Try again and collect a few more cans!",
+      "Keep going. Every drop counts, and your next run can win.",
+      "Nice effort. Tap faster and avoid misses next round.",
+      "Almost there. Give it another shot for clean water impact!"
+    ];
+
+    function pickRandomMessage(list) {
+      return list[Math.floor(Math.random() * list.length)];
+    }
+
+    function launchConfetti() {
+      const layer = document.getElementById("confetti-layer");
+      const colors = ["#FFC907", "#2E9DF7", "#8BD1CB", "#4FCB53", "#FF902A", "#F5402C", "#159A48", "#F16061"];
+      const totalPieces = 90;
+
+      for (let i = 0; i < totalPieces; i += 1) {
+        const piece = document.createElement("span");
+        piece.className = "confetti-piece";
+        piece.style.left = `${Math.random() * 100}%`;
+        piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.animationDuration = `${2.2 + Math.random() * 1.9}s`;
+        piece.style.animationDelay = `${Math.random() * 0.7}s`;
+        piece.style.width = `${6 + Math.random() * 5}px`;
+        piece.style.height = `${10 + Math.random() * 12}px`;
+        layer.appendChild(piece);
+      }
+
+      setTimeout(() => {
+        layer.innerHTML = "";
+      }, 5000);
+    }
+
+    document.getElementById("final-score").textContent = String(score);
+    document.getElementById("chip-cans").textContent = String(score);
+    document.getElementById("chip-best").textContent = String(best);
+
+    const accuracy = goal > 0 ? Math.min(100, Math.round((score / goal) * 100)) : 0;
+    document.getElementById("chip-accuracy").textContent = String(accuracy) + "%";
+
+    const highScoreBanner = document.getElementById("high-score-banner");
+    if (score >= best && score > 0) {
+      highScoreBanner.hidden = false;
+    }
+
+    const wonGame = score >= winThreshold;
+    const restartTitle = document.getElementById("restart-title");
+    const resultMessage = document.getElementById("result-message");
+    const celebrationText = document.querySelector(".restart-celebration");
+
+    if (wonGame) {
+      restartTitle.textContent = "Quest Complete!";
+      resultMessage.textContent = pickRandomMessage(winningMessages);
+      celebrationText.textContent = "Celebration unlocked!";
+      launchConfetti();
+    } else {
+      restartTitle.textContent = "Try Again";
+      resultMessage.textContent = pickRandomMessage(losingMessages);
+      celebrationText.textContent = "Keep pushing for clean water impact.";
+    }
+  </script>
+</body>
+</html>

@@ -1,54 +1,169 @@
 // Game configuration and state variables
-const GOAL_CANS = 25;        // Total items needed to collect
-let currentCans = 0;         // Current number of items collected
-let gameActive = false;      // Tracks if game is currently running
-let spawnInterval;          // Holds the interval for spawning items
+const GOAL_CANS = 25;
+const GAME_SECONDS = 30;
+const WIN_THRESHOLD = 20;
+let currentCans = 0;
+let timeLeft = GAME_SECONDS;
+let gameActive = false;
+let spawnInterval;
+let timerInterval;
+let bestScore = Number(localStorage.getItem("waterQuestBest") || "0");
 
-// Creates the 3x3 game grid where items will appear
+const scoreEl = document.getElementById("current-cans");
+const timerEl = document.getElementById("timer");
+const bestScoreEl = document.getElementById("best-score");
+const achievementEl = document.getElementById("achievements");
+const startBtn = document.getElementById("start-game");
+const gridEl = document.querySelector(".game-grid");
+const statusFillEl = document.getElementById("status-fill");
+
+function updateBestScore() {
+  bestScoreEl.textContent = String(bestScore).padStart(2, "0");
+}
+
+function updateStatusBar() {
+  const progress = Math.max(0, Math.min(100, (currentCans / GOAL_CANS) * 100));
+  statusFillEl.style.width = `${progress}%`;
+}
+
+function updateScore() {
+  scoreEl.textContent = String(currentCans);
+  updateStatusBar();
+}
+
+function updateTimer() {
+  timerEl.textContent = String(timeLeft);
+}
+
 function createGrid() {
-  const grid = document.querySelector('.game-grid');
-  grid.innerHTML = ''; // Clear any existing grid cells
-  for (let i = 0; i < 9; i++) {
-    const cell = document.createElement('div');
-    cell.className = 'grid-cell'; // Each cell represents a grid square
-    grid.appendChild(cell);
+  gridEl.innerHTML = "";
+  for (let i = 0; i < 16; i++) {
+    const cell = document.createElement("div");
+    cell.className = "grid-cell";
+    gridEl.appendChild(cell);
   }
 }
 
-// Ensure the grid is created when the page loads
-createGrid();
+function spawnTarget() {
+  if (!gameActive) return;
 
-// Spawns a new item in a random grid cell
-function spawnWaterCan() {
-  if (!gameActive) return; // Stop if the game is not active
-  const cells = document.querySelectorAll('.grid-cell');
-  
-  // Clear all cells before spawning a new water can
-  cells.forEach(cell => (cell.innerHTML = ''));
+  const cells = document.querySelectorAll(".grid-cell");
 
-  // Select a random cell from the grid to place the water can
+  cells.forEach((cell) => {
+    cell.innerHTML = "";
+  });
+
   const randomCell = cells[Math.floor(Math.random() * cells.length)];
+  const showRock = Math.random() < 0.3;
 
-  // Use a template literal to create the wrapper and water-can element
+  if (showRock) {
+    randomCell.innerHTML = `
+      <div class="rock-wrapper">
+        <div class="rock" aria-label="rock"></div>
+      </div>
+    `;
+    return;
+  }
+
   randomCell.innerHTML = `
     <div class="water-can-wrapper">
-      <div class="water-can"></div>
+      <div class="water-can" aria-label="water can"></div>
     </div>
   `;
 }
 
-// Initializes and starts a new game
-function startGame() {
-  if (gameActive) return; // Prevent starting a new game if one is already active
-  gameActive = true;
-  createGrid(); // Set up the game grid
-  spawnInterval = setInterval(spawnWaterCan, 1000); // Spawn water cans every second
+function saveBestScore() {
+  if (currentCans > bestScore) {
+    bestScore = currentCans;
+    localStorage.setItem("waterQuestBest", String(currentCans));
+  }
+  updateBestScore();
+  return bestScore;
+}
+
+function goToRestartPage() {
+  const bestScore = saveBestScore();
+  const params = new URLSearchParams({
+    ended: "1",
+    score: String(currentCans),
+    best: String(bestScore),
+    goal: String(GOAL_CANS),
+    win: String(WIN_THRESHOLD)
+  });
+  window.location.href = `restart.html?${params.toString()}`;
 }
 
 function endGame() {
-  gameActive = false; // Mark the game as inactive
-  clearInterval(spawnInterval); // Stop spawning water cans
+  gameActive = false;
+  clearInterval(spawnInterval);
+  clearInterval(timerInterval);
+  startBtn.disabled = false;
+  startBtn.textContent = "Start Game";
+  goToRestartPage();
 }
 
-// Set up click handler for the start button
-document.getElementById('start-game').addEventListener('click', startGame);
+function startTimer() {
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    timeLeft -= 1;
+    updateTimer();
+    if (timeLeft <= 0) {
+      timeLeft = 0;
+      updateTimer();
+      endGame();
+    }
+  }, 1000);
+}
+
+function startGame() {
+  if (gameActive) return;
+
+  gameActive = true;
+  currentCans = 0;
+  timeLeft = GAME_SECONDS;
+  updateScore();
+  updateTimer();
+  createGrid();
+
+  startBtn.disabled = true;
+  startBtn.textContent = "Game Running";
+  achievementEl.textContent = "Tap cans to collect drops.";
+
+  spawnTarget();
+  spawnInterval = setInterval(spawnTarget, 750);
+  startTimer();
+}
+
+function adjustScore(delta, message) {
+  currentCans = Math.max(0, currentCans + delta);
+  if (currentCans > bestScore) {
+    bestScore = currentCans;
+    localStorage.setItem("waterQuestBest", String(bestScore));
+    updateBestScore();
+  }
+  updateScore();
+  achievementEl.textContent = message;
+}
+
+gridEl.addEventListener("click", (event) => {
+  if (!gameActive) return;
+
+  const can = event.target.closest(".water-can");
+  if (can) {
+    adjustScore(1, "hit");
+    can.parentElement.innerHTML = "";
+    return;
+  }
+
+  const rock = event.target.closest(".rock");
+  if (!rock) return;
+
+  adjustScore(-2, "Rock hit: -2 points.");
+  rock.parentElement.innerHTML = "";
+});
+
+updateScore();
+updateTimer();
+updateBestScore();
+createGrid();
+startBtn.addEventListener("click", startGame);

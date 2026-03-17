@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Water Quest - Game</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+</head>
+<body class="game-page">
+  <div class="container">
+    <h1>Water Quest</h1>
+    <p class="game-instructions" aria-label="Score progress">
+      <span id="status-fill" class="status-fill" aria-hidden="true"></span>
+    </p>
+    <div class="stats">
+      <p>Cans Collected: <span id="current-cans">0</span></p>
+      <p>Time Left: <span id="timer">30</span>s</p>
+      <p>Best Score: <span id="best-score">00</span></p>
+    </div>
+    <div id="achievements" class="achievement"></div>
+    <div class="game-grid"></div>
+    <button id="start-game">Start Game</button>
+    <div class="page-links">
+      <a href="main_page.html">Back to Main Menu</a>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

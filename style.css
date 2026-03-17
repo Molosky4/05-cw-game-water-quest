@@ -18,82 +18,218 @@ Fonts:
 
 */
 
+:root {
+  --screen-width: min(680px, 100%);
+  --cw-yellow: #FFC907;
+  --cw-blue: #2E9DF7;
+  --cw-light-blue: #8BD1CB;
+  --cw-green: #4FCB53;
+  --cw-orange: #FF902A;
+  --cw-red: #F5402C;
+  --cw-dark-green: #159A48;
+  --cw-pink: #F16061;
+  --ink-soft: #697689;
+  --panel: #ececec;
+  --line: #c7c7c7;
+}
+
 * {
   box-sizing: border-box;
 }
 
 body {
-  font-family: Arial, sans-serif;
   margin: 0;
-  padding: 30px;
-  background-color: #f0f0f0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background-image:
+    linear-gradient(140deg, rgba(46, 157, 247, 0.24) 0%, rgba(139, 209, 203, 0.28) 46%, rgba(255, 201, 7, 0.2) 100%),
+    linear-gradient(rgba(245, 251, 255, 0.74), rgba(232, 246, 242, 0.8)),
+    url("img/charity-water.webp");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-blend-mode: multiply, normal, normal;
   color: #333;
+  font-family: Avenir, "Avenir Next", Arial, sans-serif;
 }
 
 .container {
-  max-width: 750px;
-  margin: 50px auto;
-  background-color: #fff;
-  padding: 40px;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: var(--screen-width);
+  border-radius: 32px;
+  border: 3px solid var(--cw-blue);
+  background: linear-gradient(180deg, #f6fbff 0%, #ecf7f6 100%);
+  box-shadow: inset 0 -8px 0 #d8eef8;
+  padding: 14px;
+  position: relative;
 }
 
 h1 {
+  margin: 0 0 8px;
+  font-size: 1.05rem;
   text-align: center;
-  font-size: 30px;
-  font-weight: bold;
-  margin-bottom: 20px;
-  color: #333;
-}
-
-h1 img {
-  height: 50px;
-  margin-right: 15px;
-  display: block;
+  color: var(--cw-blue);
+  font-family: "Proxima Nova", "Avenir Next", Avenir, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .game-instructions {
-  font-size: 18px;
-  margin-bottom: 30px;
+  margin: 0 0 14px;
   text-align: center;
+  color: #4c728f;
+  font-size: 0.82rem;
+  border-radius: 999px;
+  background: #dcedfa;
+  height: 12px;
+  overflow: hidden;
+  text-indent: -9999px;
+  position: relative;
+}
+
+.status-fill {
+  position: absolute;
+  inset: 0;
+  width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--cw-blue), var(--cw-light-blue));
+  transition: width 0.2s ease;
 }
 
 .stats {
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 30px;
-  background-color: #f5f5f5;
-  padding: 15px 0;
-  border-radius: 8px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 10px;
 }
 
 .stats p {
   margin: 0;
-  font-size: 18px;
-  font-weight: bold;
-  color: #333;
+  padding: 8px 6px;
+  text-align: center;
+  border-radius: 12px;
+  border: 1px solid #8dc5eb;
+  background: #f8fdff;
+  color: #2d6b95;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-family: "Proxima Nova", "Avenir Next", Avenir, sans-serif;
+}
+
+.stats span {
+  display: block;
+  margin-top: 3px;
+  font-size: 2rem;
+  line-height: 1;
+  letter-spacing: 0;
+  color: var(--cw-blue);
+  font-weight: 700;
+  font-family: Avenir, "Avenir Next", Arial, sans-serif;
+}
+
+#achievements {
+  margin: 0 2px 8px;
+  border: 1.5px dashed var(--cw-yellow);
+  border-radius: 10px;
+  background: #fff4ce;
+  color: #8a7442;
+  min-height: 34px;
+  padding: 7px 10px;
+  font-size: 0.78rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+#achievements:empty::before {
+  content: "";
 }
 
 .game-grid {
+  border: 2px solid #8bcbd9;
+  border-radius: 16px;
+  background: #eaf6f4;
+  padding: 10px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.game-page .container {
+  padding: 10px;
+}
+
+.game-page .stats {
+  margin-bottom: 8px;
+}
+
+.game-page .stats p {
+  padding: 6px 6px;
+}
+
+.game-page .stats span {
+  font-size: 1.7rem;
+}
+
+.game-page #achievements {
+  min-height: 30px;
+  padding: 6px 8px;
+  margin-bottom: 6px;
+}
+
+.game-page .game-grid {
+  padding: 8px;
+  gap: 7px;
+  max-width: 440px;
   margin: 0 auto;
-  max-width: 500px;
+}
+
+.game-page .water-can-wrapper,
+.game-page .rock-wrapper {
+  width: 44px;
+  height: 44px;
+}
+
+.game-page button {
+  margin-top: 8px;
+}
+
+.game-page .page-links {
+  margin-top: 8px;
 }
 
 .grid-cell {
-  background-color: #e8e8e8;
-  border-radius: 8px;
+  background: #cfe8f8;
+  border: 1px solid #9bcce9;
+  border-radius: 12px;
   aspect-ratio: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: transform 0.15s ease, background-color 0.2s ease;
   position: relative;
   overflow: hidden;
+}
+
+.grid-cell::before {
+  content: "";
+  position: absolute;
+  bottom: 10%;
+  left: 18%;
+  width: 64%;
+  height: 12%;
+  border-radius: 999px;
+  background: rgba(46, 157, 247, 0.22);
+}
+
+.grid-cell:active {
+  transform: translateY(1px) scale(0.985);
 }
 
 .water-can-wrapper {
@@ -101,43 +237,199 @@ h1 img {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 70px;
-  height: 70px;
-  /* Ensure the wrapper is properly centered */
+  width: 52px;
+  height: 52px;
+}
+
+.rock-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 52px;
+  height: 52px;
 }
 
 .water-can {
   width: 100%;
   height: 100%;
-  background-image: url('img/water-can.png');
+  background-image: url("img/water-can.png");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
   cursor: pointer;
   border-radius: 50%;
-  animation: popUp 0.5s cubic-bezier(0.17, 0.67, 0.34, 2);
-  transform-origin: center; /* Ensure scaling happens from the center */
+  animation: popUp 0.28s cubic-bezier(0.17, 0.67, 0.34, 2);
+  transform-origin: center;
+}
+
+.rock {
+  width: 100%;
+  height: 100%;
+  background-image: url("img/rock.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  cursor: pointer;
+  animation: popUp 0.28s cubic-bezier(0.17, 0.67, 0.34, 2);
+  transform-origin: center;
 }
 
 @keyframes popUp {
   0% {
-    transform: scale(0.5); /* Start scaling from the center */
+    transform: scale(0.55);
+    opacity: 0;
   }
   100% {
-    transform: scale(1); /* End scaling at full size */
+    transform: scale(1);
+    opacity: 1;
   }
 }
 
-
 button {
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  font-size: 16px;
-  border-radius: 8px;
+  width: 100%;
+  margin: 10px 0 0;
+  border: 1.5px solid var(--cw-orange);
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: var(--cw-yellow);
+  color: #31410b;
+  font-size: 0.86rem;
+  letter-spacing: 0.02em;
+  font-family: "Proxima Nova", "Avenir Next", Avenir, sans-serif;
+  font-weight: 700;
+  text-transform: none;
   cursor: pointer;
-  display: block;
-  margin: 30px auto 0;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+button:hover {
+  background: var(--cw-blue);
+  color: #ffffff;
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+@media (max-width: 520px) {
+  body {
+    padding: 8px;
+  }
+
+  .container {
+    border-radius: 28px;
+    padding: 10px;
+  }
+
+  .stats span {
+    font-size: 1.75rem;
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 12px;
+  }
+
+  .stats p {
+    letter-spacing: 0.12em;
+    font-size: 0.64rem;
+  }
+
+  .stats span {
+    font-size: 1.5rem;
+  }
+
+  .game-page .game-grid {
+    max-width: 380px;
+  }
+
+  .game-page .water-can-wrapper,
+  .game-page .rock-wrapper {
+    width: 38px;
+    height: 38px;
+  }
+}
+
+@media (max-width: 420px) {
+  body {
+    padding: 6px;
+  }
+
+  .container {
+    border-radius: 24px;
+    padding: 8px;
+  }
+
+  h1 {
+    font-size: 0.92rem;
+    margin-bottom: 6px;
+  }
+
+  .stats {
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+
+  .stats p {
+    padding: 5px 4px;
+    font-size: 0.56rem;
+    letter-spacing: 0.06em;
+  }
+
+  .stats span {
+    font-size: 1.18rem;
+    margin-top: 2px;
+  }
+
+  #achievements {
+    min-height: 24px;
+    font-size: 0.68rem;
+    padding: 5px 6px;
+    margin-bottom: 5px;
+  }
+
+  .game-grid {
+    gap: 5px;
+    padding: 6px;
+  }
+
+  .game-page .game-grid {
+    max-width: 320px;
+  }
+
+  .water-can-wrapper,
+  .rock-wrapper,
+  .game-page .water-can-wrapper,
+  .game-page .rock-wrapper {
+    width: 30px;
+    height: 30px;
+  }
+
+  button {
+    font-size: 0.74rem;
+    padding: 8px 10px;
+  }
+
+  .page-links a {
+    font-size: 0.76rem;
+  }
+}
+
+.page-links {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.page-links a {
+  color: var(--cw-dark-green);
+  text-decoration: none;
+  font-family: "Proxima Nova", "Avenir Next", Avenir, sans-serif;
+  font-weight: 700;
+  font-size: 0.88rem;
+}
+
+.page-links a:hover {
+  color: var(--cw-orange);
 }
